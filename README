@@ -1,0 +1,4 @@
+### to build image run below command on docker
+docker build -t jahshah/exchangemarket
+### to run the application run below command
+docker run -it -p 8080/8080 jahshah/exchangemarket
