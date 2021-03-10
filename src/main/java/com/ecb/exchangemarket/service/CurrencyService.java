@@ -1,34 +1,18 @@
 package com.ecb.exchangemarket.service;
 
-import com.ecb.exchangemarket.exception.ExchangeMarketException;
 import com.ecb.exchangemarket.model.*;
 import com.ecb.exchangemarket.util.Validator;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import javax.annotation.PostConstruct;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static com.ecb.exchangemarket.util.Constant.BASE_CURRENCY_LABEL;
 import static com.ecb.exchangemarket.util.Constant.TARGET_CURRENCY_LABEL;
@@ -39,11 +23,18 @@ public class CurrencyService {
     @Value(value = "${currency.graph.url}")
     private String graphUrl;
 
-    @Autowired
     private CurrencyDS currencyDS;
+
+    Logger logger = LoggerFactory.getLogger(CurrencyService.class);
+
+    @Autowired
+    public void setCurrencyDS(CurrencyDS currencyDS) {
+        this.currencyDS = currencyDS;
+    }
 
     @PostConstruct
     public void init() {
+        logger.info("service initialized");
         currencyDS.initializeDS();
         initCurrenciesStats();
     }
